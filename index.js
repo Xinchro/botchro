@@ -50,7 +50,6 @@ function replyToPing(message) {
   let msgAfterAt = message.content.split(`${botclient} `).pop(1)
   return new Promise((resolve, reject) => {
     try {
-      console.log(msgAfterAt)
       if(msgAfterAt.match(/(?:\<\@\!.*\>)/g)) {
         resolve({msg: `Hello ${message.author.username}, what about ${msgAfterAt.match(/(?:\<\@\!.*\>)/g)[0]}?`})
       } else 
@@ -114,7 +113,6 @@ function hello() {
 
 function getOverwatchStats(plat, reg, user) {
   let url = `http://ow-api.herokuapp.com/profile/${plat}/${reg}/${user}`
-  console.log(url)
   return new Promise((resolve, reject) => {
     fetch(url)
     .then((data) => { resolve(data.text()) }, (data) => { reject(data.text) })
