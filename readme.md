@@ -8,6 +8,8 @@ You'll also need:
   - a client id of your own, this is found in `my apps` -> `app details` on [Discord's app page](https://discordapp.com/developers/applications/me), add to `.env` as: `BOTCLIENT = <@yourclientid>`
   - a name of your own, add to `.env` as `BOTNAME = yourbotnamehere`
 
+Using [Discordie](http://qeled.github.io/discordie/) as a base (for now?).
+
 ### Example .env file
 ```
 TOKEN = aBCDe12345-54321.eDcBa
