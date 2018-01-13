@@ -1,14 +1,14 @@
 {
   "name": "discord-botchro",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Xinchro",
+  "license": "MIT",
   "dependencies": {
     "discordie": "^0.11.0",
     "dotenv": "^4.0.0",
