@@ -137,7 +137,7 @@ function formatOverwatchStats(data) {
             { name: "Quicklplay", 
               value: `${data.playtime.quickplay}\nWon: ${data.games.quickplay.won}`, inline:true },
           ],
-          footer: { text: "footer text" }
+          footer: { text: "Data provided by https://github.com/alfg/overwatch-api" }
         } 
       })
     } catch(err) {
