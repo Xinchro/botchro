@@ -3,6 +3,7 @@ const client = new Discordie()
 const http = require("http")
 const https = require("https")
 const fetch = require("node-fetch")
+const fs = require("fs")
 require("dotenv").config()
 
 const botclient = process.env.BOTCLIENT
@@ -33,12 +34,45 @@ client.Dispatcher.on("GATEWAY_READY", e => {
 })
 
 client.Dispatcher.on("MESSAGE_CREATE", e => {
-  checkMessage(e.message).then((data) => {
-    e.message.channel.sendMessage(data.msg, data.tts, data.embed)
-  }, (data) => { if(data != null) e.message.channel.sendMessage(data.msg, data.tts, data.embed) })
+  dealWithMessage(e.message)
+  
 })
 
-function checkMessage(message) {
+function dealWithMessage(message) {
+  if(message.channel.isPrivate) {
+    if(message.author.username.toLowerCase() != botname.toLowerCase()) {
+      dealWithDMMessage(message).then((data) => {
+        message.channel.sendMessage(data.msg, data.tts, data.embed)
+      }, (data) => { if(data != null) message.channel.sendMessage(data.msg, data.tts, data.embed) })
+    }
+  } else {
+    dealWithServerMessage(message).then((data) => {
+      message.channel.sendMessage(data.msg, data.tts, data.embed)
+    }, (data) => { if(data != null) message.channel.sendMessage(data.msg, data.tts, data.embed) })
+  }
+}
+
+function dealWithDMMessage(message) {
+  return new Promise((resolve, reject) => {
+    if(message.content === "oh") {
+      resolve({ msg:"oh ok" })
+      reject(null)
+    } else 
+    if(message.content === "ok") {
+      resolve({ msg:"ok" })
+      reject(null)
+    } else
+    if(message.content === "oh ok") {
+      resolve({ msg:"oh" })
+      reject(null)
+    } else {
+      message.channel.uploadFile(fs.readFileSync("assets/img/shoo.gif"), "assets/img/shoo.gif")
+      .then(resolve({ msg: "Don't DM me. Go away." }))
+    }
+  })
+}
+
+function dealWithServerMessage(message) {
   let msg = message.content
 
   if(msg[0] === "!") {
@@ -49,14 +83,6 @@ function checkMessage(message) {
   } else {
     return new Promise((resolve, reject) => {
       switch(msg) {
-        case "doot":
-          resolve({ msg: "doot!" })
-          break
-        case "boop":
-          resolve({ msg:"", embed: {
-            color: 3447003,
-            description: "A very simple Embed!"
-          }})
         default:
           reject(null)
       }
@@ -65,7 +91,7 @@ function checkMessage(message) {
 }
 
 function replyToPing(message) {
-  let msgAfterAt = message.content.split(`${botclient} `).pop(1)
+  let msgAfterAt = message.content.split(`${botclient} `).pop(1).toLowerCase()
   return new Promise((resolve, reject) => {
     try {
       if(msgAfterAt.match(/(?:\<\@\!.*\>)/g)) {
@@ -81,8 +107,12 @@ function replyToPing(message) {
         || msgAfterAt === "halo "
         ) {
         resolve({msg: `Hello <@!${message.author.id}>!`})
+      } else
+      if(msgAfterAt === "i love you"
+        || msgAfterAt === "ily") { 
+        resolve({msg: "no"})
       } else {
-        resolve({msg: `Hello!`})
+        reject(null)
       }
     } catch(err) {
       console.error(err)
@@ -99,8 +129,11 @@ function checkCommand(command) {
     case "status":
       return status()
       break
+    case "delete":
+      break
     case "uptime":
       return new Promise((res, rej) => { res({ msg: getUptime()}); rej(null) })
+      break
     case "overwatch":
       return getOverwatchStats(command.split(" ")[1], command.split(" ")[2], command.split(" ")[3])
       .then((data) => { return formatOverwatchStats(data) })
