@@ -99,6 +99,8 @@ function checkCommand(command) {
     case "status":
       return status()
       break
+    case "uptime":
+      return new Promise((res, rej) => { res({ msg: getUptime()}); rej(null) })
     case "overwatch":
       return getOverwatchStats(command.split(" ")[1], command.split(" ")[2], command.split(" ")[3])
       .then((data) => { return formatOverwatchStats(data) })
