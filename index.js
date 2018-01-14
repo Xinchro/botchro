@@ -22,7 +22,7 @@ function getUptime() {
   let minutes = Math.floor(tempup/60)
   tempup -= minutes*60
   let seconds = tempup
-  
+
   return `${days}d${hours}h${minutes}m${seconds}s`
 }
 
@@ -86,7 +86,7 @@ function replyToPing(message) {
       }
     } catch(err) {
       console.error(err)
-      reject(err)
+      reject(null)
     }
   })
 }
@@ -151,7 +151,7 @@ function hello() {
       })
     } catch(err) {
       console.error(err)
-      reject(err)
+      reject(null)
     }
   })
 }
@@ -187,7 +187,7 @@ function formatOverwatchStats(data) {
       })
     } catch(err) {
       console.error(err)
-      reject(err)
+      reject(null)
     }
   })
 }
