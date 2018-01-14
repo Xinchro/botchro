@@ -8,6 +8,24 @@ require("dotenv").config()
 const botclient = process.env.BOTCLIENT
 const botname = process.env.BOTNAME
 
+let uptime = 0
+let uptimeClock = setInterval(() => {
+  uptime += 1
+}, 1000)
+
+function getUptime() {
+  let tempup = uptime
+  let days = Math.floor(tempup/(60*60*24))
+  tempup -= days*24*60*60
+  let hours = Math.floor(tempup/(60*60))
+  tempup -= hours*60*60
+  let minutes = Math.floor(tempup/60)
+  tempup -= minutes*60
+  let seconds = tempup
+  
+  return `${days}d${hours}h${minutes}m${seconds}s`
+}
+
 client.connect({ token: process.env.TOKEN })
 
 client.Dispatcher.on("GATEWAY_READY", e => {
@@ -17,7 +35,7 @@ client.Dispatcher.on("GATEWAY_READY", e => {
 client.Dispatcher.on("MESSAGE_CREATE", e => {
   checkMessage(e.message).then((data) => {
     e.message.channel.sendMessage(data.msg, data.tts, data.embed)
-  }, "")
+  }, (data) => { if(data != null) e.message.channel.sendMessage(data.msg, data.tts, data.embed) })
 })
 
 function checkMessage(message) {
@@ -32,10 +50,10 @@ function checkMessage(message) {
     return new Promise((resolve, reject) => {
       switch(msg) {
         case "doot":
-          resolve({msg: "doot!"})
+          resolve({ msg: "doot!" })
           break
         case "boop":
-          resolve({msg:"", embed: {
+          resolve({ msg:"", embed: {
             color: 3447003,
             description: "A very simple Embed!"
           }})
@@ -78,6 +96,9 @@ function checkCommand(command) {
     case "hello":
       return hello()
       break
+    case "status":
+      return status()
+      break
     case "overwatch":
       return getOverwatchStats(command.split(" ")[1], command.split(" ")[2], command.split(" ")[3])
       .then((data) => { return formatOverwatchStats(data) })
@@ -86,6 +107,30 @@ function checkCommand(command) {
     default:
       return new Promise((resolve, reject) => reject(null))
   }
+}
+
+function status() {
+  return new Promise((resolve, reject) => {
+    try {
+      resolve({ 
+        msg: "", tts: false, embed: {
+          color: 0x00FF00,
+          title: "Running smoothly!",
+          fields: [
+            { name: "Stats", value: `Uptime: ${getUptime()}`, inline: false }
+          ]
+        }
+      })
+    } catch(err) {
+      console.error(err)
+      reject({ 
+        msg: "", tts: false, embed: {
+          color: 0xFF0000,
+          title: "This is fine. :fire:"
+        }
+      })
+    }
+  })
 }
 
 function hello() {
