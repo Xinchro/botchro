@@ -107,7 +107,7 @@ function replyToPing(message) {
         || msgAfterAt === "halo "
         ) {
         if(Math.floor((Math.random()*100)+1) < 90) {
-          let negative = ["Go away.", "No.", "Shoo.", "Leave me alone."]
+          let negative = textToArray("assets/text/negative_replies.txt", "\n")
 
           resolve({ msg: negative[Math.floor((Math.random()*negative.length))] })
         } else {
@@ -125,6 +125,11 @@ function replyToPing(message) {
       reject(null)
     }
   })
+}
+
+function textToArray(file, del) {
+  // reads file, splits at line break, returns array
+  return fs.readFileSync(file, "utf-8").split(del)
 }
 
 function checkCommand(command) {
