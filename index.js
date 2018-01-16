@@ -106,11 +106,17 @@ function replyToPing(message) {
         || msgAfterAt === "halo"
         || msgAfterAt === "halo "
         ) {
-        resolve({msg: `Hello <@!${message.author.id}>!`})
+        if(Math.floor((Math.random()*100)+1) < 90) {
+          let negative = ["Go away.", "No.", "Shoo.", "Leave me alone."]
+
+          resolve({ msg: negative[Math.floor((Math.random()*negative.length))] })
+        } else {
+          resolve({ msg: `Hello <@!${message.author.id}>!` })
+        }
       } else
       if(msgAfterAt === "i love you"
         || msgAfterAt === "ily") { 
-        resolve({msg: "no"})
+        resolve({msg: ":congratulations:"})
       } else {
         reject(null)
       }
