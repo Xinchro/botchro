@@ -191,16 +191,24 @@ function hello() {
   })
 }
 
-function getOverwatchStats(plat, reg, user) {
+function getOverwatchStats(user, plat, reg) {
   let url = `http://ow-api.herokuapp.com/profile/${plat}/${reg}/${user}`
   return new Promise((resolve, reject) => {
     fetch(url)
-    .then((data) => { resolve(data.text()) }, (data) => { reject(data.text) })
+    .then((data) => {
+      if(data.status === 200) {
+        resolve(data.json())
+      } else {
+        reject({ msg: "Failed to retrieve Overwatch data." })
+      }
+    },
+    (data) => { reject({ msg: "Failed to retrieve Overwatch data." }) }
+    )
   })
 }
 
+
 function formatOverwatchStats(data) {
-  data = JSON.parse(data)
   return new Promise((resolve, reject) => {
     try {
       resolve({
