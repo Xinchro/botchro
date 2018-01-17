@@ -118,8 +118,13 @@ function replyToPing(message) {
         }
       } else
       if(msgAfterAt === "i love you"
-        || msgAfterAt === "ily") { 
+        || msgAfterAt === "ily") {
         resolve({msg: ":congratulations:"})
+      } else
+      if(msgAfterAt === "git gud"
+        || msgAfterAt === "gitgud") {
+        message.channel.uploadFile(fs.readFileSync("assets/img/gitgud.jpg"))
+        resolve()
       } else {
         reject(null)
       }
