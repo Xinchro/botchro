@@ -94,9 +94,12 @@ function replyToPing(message) {
   let msgAfterAt = message.content.split(`${botclient} `).pop(1).toLowerCase()
   return new Promise((resolve, reject) => {
     try {
-      if(msgAfterAt.match(/(?:\<\@\!.*\>)/g)) {
+      if(msgAfterAt.match(/(?:\<\@\!.*\>)/gi)) {
         resolve({msg: `Hello ${message.author.username}, what about ${msgAfterAt.match(/(?:\<\@\!.*\>)/g)[0]}?`})
-      } else 
+      } else
+      if(msgAfterAt.match(/^(?:\w)+ me/gi)) {
+        resolve({msg: "no"})
+      } else
       if(msgAfterAt === "hello" 
         || msgAfterAt === "hello "
         || msgAfterAt === "helo"
