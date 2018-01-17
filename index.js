@@ -27,17 +27,19 @@ function getUptime() {
   return `${days}d${hours}h${minutes}m${seconds}s`
 }
 
+// connects the bot associated with the token
 client.connect({ token: process.env.TOKEN })
 
+// when ready, print bot name
 client.Dispatcher.on("GATEWAY_READY", e => {
   console.log("Connected as: " + client.User.username)
 })
 
 client.Dispatcher.on("MESSAGE_CREATE", e => {
   dealWithMessage(e.message)
-  
 })
 
+// check if message is private(DM) or public(server/guild)
 function dealWithMessage(message) {
   if(message.channel.isPrivate) {
     if(message.author.username.toLowerCase() != botname.toLowerCase()) {
@@ -52,6 +54,7 @@ function dealWithMessage(message) {
   }
 }
 
+// deals with messages sent in a DM
 function dealWithDMMessage(message) {
   return new Promise((resolve, reject) => {
     if(message.content === "oh") {
@@ -72,12 +75,15 @@ function dealWithDMMessage(message) {
   })
 }
 
+// deals with message sent in a channel on a server
 function dealWithServerMessage(message) {
   let msg = message.content
 
+  // checks if the message is a command("!")
   if(msg[0] === "!") {
     return checkCommand(msg.split("!")[1])
   } else
+  // checks if the message is @ the bot
   if(msg.split(" ")[0] === botclient) {
     return replyToPing(message)
   } else {
@@ -90,6 +96,7 @@ function dealWithServerMessage(message) {
   }
 }
 
+// replies to @ messages to the bot
 function replyToPing(message) {
   let msgAfterAt = message.content.split(`${botclient} `).pop(1).toLowerCase()
   return new Promise((resolve, reject) => {
@@ -135,11 +142,14 @@ function replyToPing(message) {
   })
 }
 
+// changes a text file to an array based on the given delimiter
 function textToArray(file, del) {
   // reads file, splits at line break, returns array
   return fs.readFileSync(file, "utf-8").split(del)
 }
 
+
+// checks and deals with commands
 function checkCommand(command) {
   switch(command.split(" ")[0]) {
     case "hello":
@@ -163,6 +173,7 @@ function checkCommand(command) {
   }
 }
 
+// returns the bot status as an embed, green for good, red for bad
 function status() {
   return new Promise((resolve, reject) => {
     try {
@@ -187,6 +198,8 @@ function status() {
   })
 }
 
+
+// greets users that say hello
 function hello() {
   return new Promise((resolve, reject) => {
     try {
@@ -210,6 +223,7 @@ function hello() {
   })
 }
 
+// get the overwatch data from the data service
 function getOverwatchStats(user, plat, reg) {
   let url = `http://ow-api.herokuapp.com/profile/${plat}/${reg}/${user}`
   return new Promise((resolve, reject) => {
@@ -226,7 +240,7 @@ function getOverwatchStats(user, plat, reg) {
   })
 }
 
-
+// formats the overwatch data and resolves with an embed
 function formatOverwatchStats(data) {
   return new Promise((resolve, reject) => {
     try {
