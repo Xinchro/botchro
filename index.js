@@ -1,5 +1,5 @@
-const Discordie = require("discordie")
-const client = new Discordie()
+const Discord = require("discord.js")
+const client = new Discord.Client()
 const http = require("http")
 const https = require("https")
 const fetch = require("node-fetch")
@@ -27,30 +27,33 @@ function getUptime() {
   return `${days}d${hours}h${minutes}m${seconds}s`
 }
 
-// connects the bot associated with the token
-client.connect({ token: process.env.TOKEN })
-
 // when ready, print bot name
-client.Dispatcher.on("GATEWAY_READY", e => {
-  console.log("Connected as: " + client.User.username)
+client.on("ready", e => {
+  console.log("Connected as: " + client.user.tag)
 })
 
-client.Dispatcher.on("MESSAGE_CREATE", e => {
-  dealWithMessage(e.message)
+client.on("message", msg => {
+  dealWithMessage(msg)
 })
+
+// connects the bot associated with the token
+client.login(process.env.TOKEN)
 
 // check if message is private(DM) or public(server/guild)
 function dealWithMessage(message) {
   if(message.channel.isPrivate) {
     if(message.author.username.toLowerCase() != botname.toLowerCase()) {
       dealWithDMMessage(message).then((data) => {
-        message.channel.sendMessage(data.msg, data.tts, data.embed)
-      }, (data) => { if(data != null) message.channel.sendMessage(data.msg, data.tts, data.embed) })
+        message.channel.send(data.msg, data.tts, data.embed)
+      }, (data) => { if(data != null) message.channel.send(data.msg, data.tts, data.embed) })
     }
   } else {
     dealWithServerMessage(message).then((data) => {
-      message.channel.sendMessage(data.msg, data.tts, data.embed)
-    }, (data) => { if(data != null) message.channel.sendMessage(data.msg, data.tts, data.embed) })
+      if (data.msg === '' && data.embed) {
+        message.channel.sendEmbed(data.embed)
+      }
+      message.channel.send(data.msg)
+    }, (data) => { if(data != null) message.channel.send(data.msg, data.tts, data.embed) })
   }
 }
 
@@ -60,7 +63,7 @@ function dealWithDMMessage(message) {
     if(message.content === "oh") {
       resolve({ msg:"oh ok" })
       reject(null)
-    } else 
+    } else
     if(message.content === "ok") {
       resolve({ msg:"ok" })
       reject(null)
@@ -107,7 +110,7 @@ function replyToPing(message) {
       if(msgAfterAt.match(/^(?:\w)+ me/gi)) {
         resolve({msg: "no"})
       } else
-      if(msgAfterAt === "hello" 
+      if(msgAfterAt === "hello"
         || msgAfterAt === "hello "
         || msgAfterAt === "helo"
         || msgAfterAt === "helo "
@@ -177,7 +180,7 @@ function checkCommand(command) {
 function status() {
   return new Promise((resolve, reject) => {
     try {
-      resolve({ 
+      resolve({
         msg: "", tts: false, embed: {
           color: 0x00FF00,
           title: "Running smoothly!",
@@ -188,7 +191,7 @@ function status() {
       })
     } catch(err) {
       console.error(err)
-      reject({ 
+      reject({
         msg: "", tts: false, embed: {
           color: 0xFF0000,
           title: "This is fine. :fire:"
@@ -214,7 +217,7 @@ function hello() {
             { name: "Stats", value: "I was last updated at some point\nI have been awake for some time", inline: true }
           ],
           footer: { text: "Powered by salt.", icon_url: "https://xinchronize.com/assets/logo.png" }
-        } 
+        }
       })
     } catch(err) {
       console.error(err)
@@ -242,6 +245,7 @@ function getOverwatchStats(user, plat, reg) {
 
 // formats the overwatch data and resolves with an embed
 function formatOverwatchStats(data) {
+  console.log(data)
   return new Promise((resolve, reject) => {
     try {
       resolve({
@@ -249,17 +253,17 @@ function formatOverwatchStats(data) {
           color: 0x3498db,
           author: { name: data.username, icon_url: data.portrait },
           title: data.username,
-          url: "https://playoverwatch.com/en-us/career/pc/eu/Xinchro-2390",
-          thumbnail: { url: data.competitive.rank_img },
+          url: `https://playoverwatch.com/en-us/career/pc/eu/${data.username}`,
+          thumbnail: { url: data.competitive.rank_img || "" },
           fields: [
-            { name: "Current season SR", value: data.competitive.rank, inline:false },
-            { name: "Competitive", 
-              value: `${data.playtime.competitive}\nWon: ${data.games.competitive.won}\nLost: ${data.games.competitive.lost}`, inline:true },
-            { name: "Quicklplay", 
-              value: `${data.playtime.quickplay}\nWon: ${data.games.quickplay.won}`, inline:true },
+            { name: "Current season SR", value: data.competitive.rank || 0, inline:false },
+            { name: "Competitive",
+              value: `${data.playtime.competitive || 0}\nWon: ${data.games.competitive.won || 0}\nLost: ${data.games.competitive.lost || 0}`, inline:true },
+            { name: "Quickplay",
+              value: `${data.playtime.quickplay || 0}\nWon: ${data.games.quickplay.won || 0}`, inline:true },
           ],
           footer: { text: "Data provided by https://github.com/alfg/overwatch-api" }
-        } 
+        }
       })
     } catch(err) {
       console.error(err)

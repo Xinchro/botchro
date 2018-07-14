@@ -10,7 +10,7 @@
   "author": "Xinchro",
   "license": "MIT",
   "dependencies": {
-    "discordie": "^0.11.0",
+    "discord.js": "^11.3.2",
     "dotenv": "^4.0.0",
     "node-fetch": "^1.7.3"
   }
