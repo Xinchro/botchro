@@ -81,15 +81,15 @@ function logError(error) {
 function dealWithDMMessage(message) {
   return new Promise((resolve, reject) => {
     if(message.content === "oh") {
-      resolve({ msg:"oh ok" })
+      resolve({ content:"oh ok" })
       reject(null)
     } else
     if(message.content === "ok") {
-      resolve({ msg:"ok" })
+      resolve({ content:"ok" })
       reject(null)
     } else
     if(message.content === "oh ok") {
-      resolve({ msg:"oh" })
+      resolve({ content:"oh" })
       reject(null)
     } else {
       resolve({
