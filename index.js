@@ -94,7 +94,7 @@ function dealWithDMMessage(message) {
     } else {
       resolve({
         content: "Don\"t DM me. Go away.",
-        obj: {
+        options: {
           files: [{
             attachment: "assets/img/shoo.gif",
             name: "shoo.gif"
@@ -144,7 +144,7 @@ function replyToPing(message) {
         || msgAfterAt === "halo "
         ) {
         if(Math.floor((Math.random()*100)+1) < 90) {
-          let negative = textToArray("./assets/text/negative_replies.txt", "\n")
+          let negative = textToArray("assets/text/negative_replies.txt", "\n")
 
           resolve({ content: negative[Math.floor((Math.random()*negative.length))] })
         } else {
@@ -157,7 +157,7 @@ function replyToPing(message) {
       } else
       if(msgAfterAt === "git gud"
         || msgAfterAt === "gitgud") {
-        message.channel.uploadFile(fs.readFileSync("./assets/img/gitgud.jpg"))
+        message.channel.uploadFile(fs.readFileSync("assets/img/gitgud.jpg"))
         resolve()
       } else {
         reject(null)
@@ -198,7 +198,7 @@ function checkCommand(command, channel) {
           res({
             content: {
               files: [{
-                attachment: "./assets/audio/yinbyay.flac",
+                attachment: "assets/audio/yinbyay.flac",
                 name: "yay.flac"
               }]
             }
