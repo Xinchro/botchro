@@ -206,7 +206,17 @@ function checkCommand(command, channel) {
         })
       break
     case "AAAAAaaaaAAAAhhhh":
-      return new Promise((res, rej) => { res({ content: "AAAAHHHHH! :scream:"}) })
+      return new Promise((res, rej) => {
+        res({
+          content: "AAaaaaahhh...",
+          options: {
+            files:[{
+              attachment: "assets/audio/yinbaah.flac",
+              name: "aah.flac"
+            }]
+          }
+        })
+      })
       break
     case "overwatch":
       return getOverwatchStats(command.split(" ")[1], command.split(" ")[2], command.split(" ")[3])
