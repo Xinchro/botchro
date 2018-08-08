@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "coverage": "nyc mocha --exit",
+    "test": "npm run coverage"
   },
   "author": "Xinchro",
   "license": "MIT",
@@ -13,5 +14,10 @@
     "discord.js": "^11.3.2",
     "dotenv": "^4.0.0",
     "node-fetch": "^1.7.3"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2"
   }
 }
