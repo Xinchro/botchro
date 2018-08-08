@@ -177,7 +177,7 @@ function textToArray(file, del) {
 
 
 // checks and deals with commands
-function checkCommand(command, channel) {
+function checkCommand(command) {
   switch(command.split(" ")[0]) {
     case "hello":
       return hello()
@@ -327,3 +327,18 @@ function formatOverwatchStats(data) {
     }
   })
 }
+
+
+exports.getUptime = getUptime
+exports.dealWithMessage = dealWithMessage
+exports.send = send
+exports.logError = logError
+exports.dealWithDMMessage = dealWithDMMessage
+exports.dealWithServerMessage = dealWithServerMessage
+exports.replyToPing = replyToPing
+exports.textToArray = textToArray
+exports.checkCommand = checkCommand
+exports.status = status
+exports.hello = hello
+exports.getOverwatchStats = getOverwatchStats
+exports.formatOverwatchStats = formatOverwatchStats
