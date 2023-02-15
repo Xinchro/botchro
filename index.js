@@ -28,6 +28,36 @@ const commands = [
   {
     name: 'xoncflix',
     description: 'Next Xoncflix'
+  },
+  {
+    name: 'hendz',
+    description: 'Hendz actions',
+    options: [
+      {
+        name: 'what',
+        description: 'Choose how to hend',
+        type: 3,
+        required: true,
+        choices: [
+          {
+            name: 'Show hend 🖐',
+            value: 'show'
+          },
+          {
+            name: 'Hide hend 🚫🖐',
+            value: 'hide'
+          },
+          {
+            name: 'Peek hendz 👀🖐',
+            value: 'peek'
+          },
+          {
+            name: 'Reset hendz 🔪🖐',
+            value: 'reset'
+          }
+        ]
+      }
+    ]
   }
 ]
 

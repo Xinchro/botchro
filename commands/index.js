@@ -2,6 +2,7 @@ const { hello } = require('./hello.js')
 const { getUptime } = require('./uptime.js')
 const { AttachmentBuilder } = require('discord.js')
 const { getEvents } = require('./xoncflix.js')
+const { hendzHandler } = require('./hendz.js')
 
 module.exports.interactions = async function (interaction) {
   if (!interaction.isChatInputCommand()) return
@@ -31,6 +32,9 @@ module.exports.interactions = async function (interaction) {
         interaction.reply({ embeds: [events] })
       })
       .catch((err) => { console.log(err) })
+      break
+    case 'hendz':
+      interaction.reply(hendzHandler(interaction), { ephemeral: true })
       break
     default:
       interaction.reply('Unknown command', { ephemeral: true })
