@@ -85,3 +85,28 @@ client.on('ready', () => {
 client.on('interactionCreate', interactions)
 
 client.login(token)
+
+
+/* light server to serve the assets folder */
+const http = require('http')
+const url = require('url')
+const fs = require('fs')
+const path = require('path')
+
+const PORT = process.env.PORT || 3000
+
+http.createServer( (req, res) => {
+  const parsedUrl = url.parse(req.url)
+  let pathname = path.join(__dirname+'/assets', parsedUrl.pathname)
+
+  fs.readFile(pathname, function(err, data) {
+    if(err) {
+      res.statusCode = 404
+      res.end()
+    } else {
+      res.end(data)
+    }
+  })
+}).listen(PORT)
+
+console.log(`assets served on port ${PORT}`)
