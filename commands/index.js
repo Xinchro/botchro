@@ -9,9 +9,6 @@ module.exports.interactions = async function (interaction) {
   let file
 
   switch (interaction.commandName) {
-    case 'ping':
-      await interaction.reply('Pong!')
-      break
     case 'yay':
       file = new AttachmentBuilder('./assets/audio/yinbyay.flac').setName('yay.flac')
       interaction.reply({ files: [file] })

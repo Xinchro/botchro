@@ -6,10 +6,6 @@ const botid = process.env.BOTID
 
 const commands = [
   {
-    name: 'ping',
-    description: 'Replies with Pong!'
-  },
-  {
     name: 'yay',
     description: 'YyyaaAaAAaaYYyy'
   },
