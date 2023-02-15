@@ -4,13 +4,13 @@ module.exports.hendzHandler = (interaction) => {
   if(!interaction.options.getString('what')) return "nope"
   switch(interaction.options.getString('what')) {
     case 'show':
-      return this.showHend(interaction)
+      return { content: this.showHend(interaction), ephemeral: true }
     case 'hide':
-      return this.hideHend(interaction)
+      return { content: this.hideHend(interaction), ephemeral: true }
     case 'peek':
-      return this.getHendz(interaction)
+      return { content: this.getHendz(interaction), ephemeral: false }
     case 'reset':
-      return this.resetHendz(interaction)
+      return { content: this.resetHendz(interaction), ephemeral: true }
     default:
       return 'wat'
   }

@@ -21,10 +21,10 @@ module.exports.interactions = async function (interaction) {
       interaction.reply({ files: [file] })
       break
     case 'uptime':
-      interaction.reply(`I've been up for ${getUptime()}`)
+      interaction.reply(`I've been up for ${getUptime()}`, { ephemeral: true })
       break
     case 'hello':
-      interaction.reply({ embeds: [hello()] })
+      interaction.reply({ embeds: [hello()], ephemeral: false })
       break
     case 'xoncflix':
       getEvents(interaction.guild)
@@ -34,7 +34,7 @@ module.exports.interactions = async function (interaction) {
       .catch((err) => { console.log(err) })
       break
     case 'hendz':
-      interaction.reply(hendzHandler(interaction), { ephemeral: true })
+      interaction.reply(hendzHandler(interaction))
       break
     default:
       interaction.reply('Unknown command', { ephemeral: true })
