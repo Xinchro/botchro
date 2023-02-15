@@ -58,6 +58,7 @@ const commands = [
 ]
 
 const rest = new REST({ version: '10' }).setToken(token)
+const { ActivityType } = require('discord.js')
 
 async function loadCommands() {
   try {
@@ -78,6 +79,7 @@ const { interactions } = require('./commands/index.js')
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
+  client.user.setActivity('How To Be Human 101', { type: ActivityType.Watching  })
 })
 
 client.on('interactionCreate', interactions)
