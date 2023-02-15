@@ -1,3 +1,5 @@
+const { execSync } = require('child_process')
+
 module.exports.formatDateTime  = (time) => {
   const date = new Date(time)
   const hours = date.getHours()
@@ -11,14 +13,16 @@ module.exports.formatDateTime  = (time) => {
 }
 
 module.exports.getLastCommitTime = () =>  {
-  const { execSync } = require('child_process')
-  const commitTime = this.formatDateTime(execSync('git log master -1 --format=%cd').toString())
+  const curl = execSync('curl https://api.github.com/repos/xinchro/botchro/commits?per_page=1')
+  const commitTime = this.formatDateTime(JSON.parse(curl)[0].commit.author.date)
+
   return commitTime
 }
 
 module.exports.getLastCommitMessage = () => {
-  const { execSync } = require('child_process')
-  const commitMessage = execSync('git log master -1 --format=%s').toString().trimEnd()
+  const curl = execSync('curl https://api.github.com/repos/xinchro/botchro/commits?per_page=1')
+  const commitMessage = JSON.parse(curl)[0].commit.message.split('\n')[0]
+
   return commitMessage
 }
 
