@@ -1,6 +1,7 @@
 const { hello } = require('./hello.js')
 const { getUptime } = require('./uptime.js')
 const { AttachmentBuilder } = require('discord.js')
+const { getEvents } = require('./xoncflix.js')
 
 module.exports.interactions = async function (interaction) {
   if (!interaction.isChatInputCommand()) return
@@ -23,6 +24,13 @@ module.exports.interactions = async function (interaction) {
       break
     case 'hello':
       interaction.reply({ embeds: [hello()] })
+      break
+    case 'xoncflix':
+      getEvents(interaction.guild)
+      .then((events) => {
+        interaction.reply({ embeds: [events] })
+      })
+      .catch((err) => { console.log(err) })
       break
     default:
       interaction.reply('Unknown command', { ephemeral: true })

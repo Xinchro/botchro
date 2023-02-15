@@ -24,6 +24,10 @@ const commands = [
   {
     name: 'hello',
     description: 'Bot information'
+  },
+  {
+    name: 'xoncflix',
+    description: 'Next Xoncflix'
   }
 ]
 
@@ -43,9 +47,8 @@ async function loadCommands() {
 
 loadCommands()
 
-const { Client, GatewayIntentBits } = require('discord.js')
+const { client } = require('./client.js')
 const { interactions } = require('./commands/index.js')
-const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
