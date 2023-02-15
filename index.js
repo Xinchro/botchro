@@ -21,6 +21,10 @@ const commands = [
   {
     name: 'uptime',
     description: 'Shows the uptime of the bot'
+  },
+  {
+    name: 'hello',
+    description: 'Bot information'
   }
 ]
 
@@ -66,6 +70,9 @@ client.on('interactionCreate', async interaction => {
     case 'uptime':
       interaction.reply(`I've been up for ${getUptime()}`)
       break
+    case 'hello':
+      interaction.reply({ embeds: [hello()] })
+      break
     default:
       interaction.reply('Unknown command', { ephemeral: true })
       break
@@ -79,6 +86,46 @@ function getUptime() {
   const minutes = Math.floor(uptime / 60) % 60
   const seconds = Math.floor(uptime % 60)
   return `${days}d ${hours}h ${minutes}m ${seconds}s`
+}
+
+function getLastCommitTime() {
+  const { execSync } = require('child_process')
+  const commitTime = formatDateTime(execSync('git log master -1 --format=%cd').toString())
+  return commitTime
+}
+
+function getLastCommitMessage() {
+  const { execSync } = require('child_process')
+  const commitMessage = execSync('git log master -1 --format=%s').toString().trimEnd()
+  return commitMessage
+}
+
+function formatDateTime(time) {
+  const date = new Date(time)
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  const seconds = date.getSeconds()
+  const day = date.getDate()
+  const month = date.getMonth() + 1
+  const year = date.getFullYear()
+
+  return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`
+}
+
+function hello() {
+  const embed = {
+    color: 0x00FF00,
+    author: { name: botname },
+    title: "Hello!",
+    fields: [
+      { name: "Me", value: `I am ${botname}! Beep boop!`, inline: true },
+      { name: "Creator", value: "I was created by a͜҉n̕ ̶͜id̵̶i̴o̶t̴̢  Xinchro!", inline: true
+      },
+      { name: "Stats", value: `I was last updated ${getLastCommitTime()} for "${getLastCommitMessage()}".\nI have been awake for ${getUptime()}`, inline: true }
+    ],
+    footer: { text: "Powered by salt.", icon_url: "https://xinchronize.com/assets/logo.png" }
+  }
+  return embed
 }
 
 client.login(token)
