@@ -32,6 +32,11 @@ module.exports.timeDifference = (current, target) => {
   if(days) differenceString += `${days}d `
   if(hours) differenceString += `${hours}h `
   if(minutes) differenceString += `${minutes}m `
+
+  if(difference < 0) {
+    return '5M:0L:-D:3L:4Y'
+  }
+
   if(differenceString) {
     return `in ${differenceString}`
   } else {
