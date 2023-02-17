@@ -16,8 +16,8 @@ module.exports.getEvents = async function (guild) {
       eventFields.push(...xoncflixEvents.map(event => {
         let fieldValue = ''
         fieldValue += event.description ? `${event.description}\n` : ''
-        fieldValue += event.scheduledStartTimestamp ? `\n${new Date(event.scheduledStartTimestamp).toISOString().replace('T', ' ').replace('Z', '\n').trimEnd()}\n` : ''
-        fieldValue += event.scheduledStartTimestamp ? `\n${timeDifference(new Date(), event.scheduledStartTimestamp)}\n` : ''
+        fieldValue += event.scheduledStartTimestamp ? `\n<t:${parseInt(event.scheduledStartTimestamp/1000)}:f>\n` : ''
+        fieldValue += event.scheduledStartTimestamp ? `\n<t:${parseInt(event.scheduledStartTimestamp/1000)}:R>\n` : ''
 
         return {
           name: event.name,
@@ -29,8 +29,8 @@ module.exports.getEvents = async function (guild) {
       eventFields.push(...timeTmEvents.map(event => {
         let fieldValue = ''
         fieldValue += event.description ? `${event.description}\n` : ''
-        fieldValue += event.scheduledStartTimestamp ? `\n${new Date(event.scheduledStartTimestamp).toISOString().replace('T', ' ').replace('Z', '\n').trimEnd()}\n` : ''
-        fieldValue += event.scheduledStartTimestamp ? `\n${timeDifference(new Date(), event.scheduledStartTimestamp)}\n` : ''
+        fieldValue += event.scheduledStartTimestamp ? `\n<t:${parseInt(event.scheduledStartTimestamp/1000)}:f>}\n` : ''
+        fieldValue += event.scheduledStartTimestamp ? `\n<t:${parseInt(event.scheduledStartTimestamp/1000)}:R>\n` : ''
 
         return {
           name: event.name,
