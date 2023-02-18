@@ -1,6 +1,6 @@
-let hendz = []
+let hendz = new Set()
 
-module.exports.hendzHandler = (interaction) => {
+module.exports.hendzHandler = async (interaction) => {
   if(!interaction.options.getString('what')) return "nope"
   switch(interaction.options.getString('what')) {
     case 'show':
@@ -17,20 +17,21 @@ module.exports.hendzHandler = (interaction) => {
 }
 
 module.exports.showHend = (interaction) => {
-  hendz.push(interaction.user.username)
+  hendz.add(interaction.user.username)
   return 'You\'ve hendz\'d'
 }
 
 module.exports.hideHend = (interaction) => {
-  hendz = hendz.filter(hend => hend !== interaction.user.username)
+  hendz.delete(interaction.user.username)
   return 'You\'ve unhendz\'d'
 }
 
-module.exports.getHendz = (interaction) => {
-  return `People who have hendz'd: ${hendz.join(', ').length > 0 ? hendz.join(', ') : 'No-one. Very sad. :('}`
+module.exports.getHendz = () => {
+  let hendzArray = Array.from(hendz)
+  return `People who have hendz'd: ${hendzArray.length > 0 ? hendzArray.join(', ') : 'No-one. Very sad. :('}`
 }
 
-module.exports.resetHendz = (interaction) => {
-  hendz = []
+module.exports.resetHendz = () => {
+  hendz.clear()
   return 'Hendz have been reset'
 }
