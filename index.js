@@ -94,18 +94,36 @@ const path = require('path')
 
 const PORT = process.env.PORT || 3000
 
-http.createServer( (req, res) => {
+http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url)
   let pathname = path.join(__dirname+'/assets', parsedUrl.pathname)
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Request-Method': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS, GET',
+    'Access-Control-Allow-Headers': '*'
+  }
 
-  fs.readFile(pathname, function(err, data) {
-    if(err) {
-      res.statusCode = 404
-      res.end()
-    } else {
-      res.end(data)
-    }
-  })
+  if(req.method === 'OPTIONS') {
+    res.writeHead(204, headers)
+    res.end()
+    return
+  }
+
+  if(req.method === 'GET') {
+    res.writeHead(200, headers)
+    fs.readFile(pathname, function(err, data) {
+      if(err) {
+        res.statusCode = 404
+        res.end()
+      } else {
+        res.statusCode = 200
+        res.end(data)
+      }
+    })
+
+    return
+  }
 }).listen(PORT)
 
 console.log(`assets served on port ${PORT}`)
