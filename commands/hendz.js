@@ -3,8 +3,7 @@ const path = require('path')
 const assetsPath = path.join(__dirname, '..', 'assets')
 
 module.exports.hendzHandler = async (interaction) => {
-  if(!interaction.options.getString('what')) return "nope"
-  switch(interaction.options.getString('what')) {
+  switch(interaction.options.getSubcommand()) {
     case 'show':
       return { content: await this.showHend(interaction), ephemeral: true }
     case 'hide':
