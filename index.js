@@ -30,28 +30,24 @@ const commands = [
     description: 'Hendz actions',
     options: [
       {
-        name: 'what',
-        description: 'Choose how to hend',
-        type: 3,
-        required: true,
-        choices: [
-          {
-            name: 'Show hend 🖐',
-            value: 'show'
-          },
-          {
-            name: 'Hide hend 🚫🖐',
-            value: 'hide'
-          },
-          {
-            name: 'Peek hendz 👀🖐',
-            value: 'peek'
-          },
-          {
-            name: 'Reset hendz 🔪🖐',
-            value: 'reset'
-          }
-        ]
+        name: 'show',
+        description: 'Show your hend',
+        type: 1
+      },
+      {
+        name: 'hide',
+        description: 'Hide your hend',
+        type: 1
+      },
+      {
+        name: 'peek',
+        description: 'Peek at hendz',
+        type: 1
+      },
+      {
+        name: 'reset',
+        description: 'Reset hendz',
+        type: 1
       }
     ]
   },
