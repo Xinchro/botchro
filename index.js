@@ -54,6 +54,48 @@ const commands = [
         ]
       }
     ]
+  },
+  {
+    name: 'timevids',
+    description: 'TimeVids actions',
+    options: [
+      {
+        name: 'add',
+        description: 'Add a video to the queue',
+        type: 1,
+        options: [
+          {
+            name: 'url',
+            description: 'URL of the video',
+            type: 3,
+            required: true
+          }
+        ]
+      },
+      {
+        name: 'remove',
+        description: 'Remove a video from the queue',
+        type: 1,
+        options: [
+          {
+            name: 'url',
+            description: 'URL of the video',
+            type: 3,
+            required: true
+          }
+        ]
+      },
+      {
+        name: 'list',
+        description: 'List all videos in the queue',
+        type: 1
+      },
+      {
+        name: 'clear',
+        description: 'Clear all videos from the queue',
+        type: 1
+      }
+    ]
   }
 ]
 
