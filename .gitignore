@@ -1,3 +1,7 @@
+# custom
+assets/data/**
+!assets/data/.gitkeep
+
 # Logs
 logs
 *.log

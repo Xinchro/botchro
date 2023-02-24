@@ -31,14 +31,16 @@ module.exports.interactions = async function (interaction) {
       .catch((err) => { console.log(err) })
       break
     case 'hendz':
-      interaction.reply(hendzHandler(interaction))
+      hendzHandler(interaction)
+        .then((response) => {
+          interaction.reply(response)
+        })
       break
     default:
       interaction.reply('Unknown command', { ephemeral: true })
       break
   }
 }
-
 
 module.exports.hello
 module.exports.uptime

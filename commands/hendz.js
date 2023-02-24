@@ -1,36 +1,69 @@
-let hendz = []
+const fs = require('fs')
+const path = require('path')
+const assetsPath = path.join(__dirname, '..', 'assets')
 
-module.exports.hendzHandler = (interaction) => {
+module.exports.hendzHandler = async (interaction) => {
   if(!interaction.options.getString('what')) return "nope"
   switch(interaction.options.getString('what')) {
     case 'show':
-      return { content: this.showHend(interaction), ephemeral: true }
+      return { content: await this.showHend(interaction), ephemeral: true }
     case 'hide':
-      return { content: this.hideHend(interaction), ephemeral: true }
+      return { content: await this.hideHend(interaction), ephemeral: true }
     case 'peek':
-      return { content: this.getHendz(interaction), ephemeral: false }
+      return { content: await this.getHendz(interaction), ephemeral: false }
     case 'reset':
-      return { content: this.resetHendz(interaction), ephemeral: true }
+      return { content: await this.resetHendz(interaction), ephemeral: true }
     default:
       return 'wat'
   }
 }
 
-module.exports.showHend = (interaction) => {
-  hendz.push(interaction.user.username)
+module.exports.showHend = async (interaction) => {
+  const hendz = await loadHendz()
+  hendz.add(interaction.user.username)
+  await saveHendz(hendz)
   return 'You\'ve hendz\'d'
 }
 
-module.exports.hideHend = (interaction) => {
-  hendz = hendz.filter(hend => hend !== interaction.user.username)
+module.exports.hideHend = async (interaction) => {
+  const hendz = await loadHendz()
+  hendz.delete(interaction.user.username)
+  await saveHendz(hendz)
   return 'You\'ve unhendz\'d'
 }
 
-module.exports.getHendz = (interaction) => {
-  return `People who have hendz'd: ${hendz.join(', ').length > 0 ? hendz.join(', ') : 'No-one. Very sad. :('}`
+module.exports.getHendz = async () => {
+  const hendzArray = Array.from(await loadHendz())
+  return `People who have hendz'd: ${hendzArray.length > 0 ? hendzArray.join(', ') : 'No-one. Very sad. :('}`
 }
 
-module.exports.resetHendz = (interaction) => {
-  hendz = []
+module.exports.resetHendz = async () => {
+  await saveHendz(new Set())
   return 'Hendz have been reset'
+}
+
+function saveHendz(user) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path.join(assetsPath, 'data/hendz.json'), JSON.stringify(Array.from(user ? user : [])), (err) => {
+      if(err) {
+        console.error(err)
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
+}
+
+async function loadHendz() {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path.join(assetsPath, 'data/hendz.json'), (err, data) => {
+      if(err) {
+        console.error(err)
+        resolve(new Set())
+      } else {
+        resolve(new Set(JSON.parse(data)))
+      }
+    })
+  })
 }

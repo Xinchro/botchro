@@ -86,28 +86,44 @@ client.on('interactionCreate', interactions)
 
 client.login(token)
 
-
-// i don't remember why i needed this
 /* light server to serve the assets folder */
-// const http = require('http')
-// const url = require('url')
-// const fs = require('fs')
-// const path = require('path')
+const http = require('http')
+const url = require('url')
+const fs = require('fs')
+const path = require('path')
 
-// const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000
 
-// http.createServer( (req, res) => {
-//   const parsedUrl = url.parse(req.url)
-//   let pathname = path.join(__dirname+'/assets', parsedUrl.pathname)
+http.createServer((req, res) => {
+  const parsedUrl = url.parse(req.url)
+  let pathname = path.join(__dirname+'/assets', parsedUrl.pathname)
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Request-Method': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS, GET',
+    'Access-Control-Allow-Headers': '*'
+  }
 
-//   fs.readFile(pathname, function(err, data) {
-//     if(err) {
-//       res.statusCode = 404
-//       res.end()
-//     } else {
-//       res.end(data)
-//     }
-//   })
-// }).listen(PORT)
+  if(req.method === 'OPTIONS') {
+    res.writeHead(204, headers)
+    res.end()
+    return
+  }
 
-// console.log(`assets served on port ${PORT}`)
+  if(req.method === 'GET') {
+    res.writeHead(200, headers)
+    fs.readFile(pathname, function(err, data) {
+      if(err) {
+        res.statusCode = 404
+        res.end()
+      } else {
+        res.statusCode = 200
+        res.end(data)
+      }
+    })
+
+    return
+  }
+}).listen(PORT)
+
+console.log(`assets served on port ${PORT}`)
