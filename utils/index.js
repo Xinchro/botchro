@@ -47,3 +47,19 @@ module.exports.timeDifference = (current, target) => {
     return 'less than a minute'
   }
 }
+
+module.exports.logInteraction = (interaction) => {
+  let logline = `Interaction from ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user.id}) - ${interaction.commandName}`
+  if(interaction.options) {
+    if(interaction.options._subcommand) {
+      logline += ` ${interaction.options._subcommand}`
+      if(interaction.options._hoistedOptions) {
+        interaction.options._hoistedOptions.forEach((option) => {
+          logline += ` ${option.name}: ${option.value}`
+        })
+      }
+    }
+  }
+
+  console.log(logline)
+}
