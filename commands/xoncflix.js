@@ -28,7 +28,7 @@ module.exports.getEvents = async function (guild) {
 
     fieldValue += `\nAttending: ${event.userCount}
     ${users.map(userObj => {
-       return `${userObj[1].user.username}`
+      return `${guild.members.cache.get(userObj[1].user.id).nickname}`
     }).join(', ')}`
 
     return {
