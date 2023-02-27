@@ -1,3 +1,5 @@
+const { loadTimevids } = require('../utils/index.js')
+
 module.exports.getEvents = async function (guild) {
   let eventsEmbed = {
     color: 0x0099ff,
@@ -30,6 +32,10 @@ module.exports.getEvents = async function (guild) {
     ${users.map(userObj => {
       return `${guild.members.cache.get(userObj[1].user.id).nickname}`
     }).join(', ')}`
+
+    if(event.name.toLowerCase().startsWith('time™')) {
+      fieldValue += `\n\n Video queue length: ${(await loadTimevids()).size}`
+    }
 
     return {
       name: event.name,
