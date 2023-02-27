@@ -30,7 +30,8 @@ module.exports.getEvents = async function (guild) {
 
     fieldValue += `\nAttending: ${event.userCount}
     ${users.map(userObj => {
-      return `${guild.members.cache.get(userObj[1].user.id).nickname}`
+      let name = userObj[1].user.username
+      return name
     }).join(', ')}`
 
     if(event.name.toLowerCase().startsWith('time™')) {
