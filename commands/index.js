@@ -1,3 +1,5 @@
+const { logInteraction } = require('../utils/index.js')
+
 const { hello } = require('./hello.js')
 const { getUptime } = require('./uptime.js')
 const { AttachmentBuilder } = require('discord.js')
@@ -8,6 +10,8 @@ const { timevidsHandler } = require('./timevids.js')
 module.exports.interactions = async function (interaction) {
   if (!interaction.isChatInputCommand()) return
   let file
+
+  logInteraction(interaction)
 
   switch (interaction.commandName) {
     case 'yay':

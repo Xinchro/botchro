@@ -1,4 +1,7 @@
 const { execSync } = require('child_process')
+const fs = require('fs')
+const path = require('path')
+const assetsPath = path.join(__dirname, '..', 'assets')
 
 module.exports.formatDateTime  = (time) => {
   const date = new Date(time)
@@ -46,4 +49,46 @@ module.exports.timeDifference = (current, target) => {
   } else {
     return 'less than a minute'
   }
+}
+
+module.exports.logInteraction = (interaction) => {
+  let logline = `Interaction from ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user.id}) - ${interaction.commandName}`
+  if(interaction.options) {
+    if(interaction.options._subcommand) {
+      logline += ` ${interaction.options._subcommand}`
+      if(interaction.options._hoistedOptions) {
+        interaction.options._hoistedOptions.forEach((option) => {
+          logline += ` ${option.name}: ${option.value}`
+        })
+      }
+    }
+  }
+
+  console.log(logline)
+}
+
+module.exports.saveTimevids = (user) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path.join(assetsPath, 'data/timevids.json'), JSON.stringify(Array.from(user ? user : [])), (err) => {
+      if (err) {
+        console.error(err)
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
+}
+
+module.exports.loadTimevids = async () => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path.join(assetsPath, 'data/timevids.json'), (err, data) => {
+      if (err) {
+        console.error(err)
+        resolve(new Set())
+      } else {
+        resolve(new Set(JSON.parse(data)))
+      }
+    })
+  })
 }

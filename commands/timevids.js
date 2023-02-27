@@ -1,6 +1,4 @@
-const fs = require('fs')
-const path = require('path')
-const assetsPath = path.join(__dirname, '..', 'assets')
+const { loadTimevids, saveTimevids } = require('../utils/index.js')
 
 module.exports.timevidsHandler = async (interaction) => {
   switch (interaction.options.getSubcommand()) {
@@ -54,30 +52,4 @@ module.exports.getTimevids = async () => {
 module.exports.clearTimevids = async () => {
   await saveTimevids(new Set())
   return 'Timevids have been reset'
-}
-
-function saveTimevids(user) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(path.join(assetsPath, 'data/timevids.json'), JSON.stringify(Array.from(user ? user : [])), (err) => {
-      if (err) {
-        console.error(err)
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
-  })
-}
-
-async function loadTimevids() {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path.join(assetsPath, 'data/timevids.json'), (err, data) => {
-      if (err) {
-        console.error(err)
-        resolve(new Set())
-      } else {
-        resolve(new Set(JSON.parse(data)))
-      }
-    })
-  })
 }
