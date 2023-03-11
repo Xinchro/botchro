@@ -1,6 +1,9 @@
 const { execSync } = require('child_process')
 const fs = require('fs')
 const path = require('path')
+const { MongoClient } = require('mongodb')
+const mongoUri = `mongodb://${process.env.MONGOUSER}:${process.env.MONGOPASSWORD}@${process.env.MONGOHOST}:${process.env.MONGOPORT}`
+const mongoClient = new MongoClient(mongoUri)
 const assetsPath = path.join(__dirname, '..', 'assets')
 
 module.exports.formatDateTime  = (time) => {
@@ -67,28 +70,35 @@ module.exports.logInteraction = (interaction) => {
   console.log(logline)
 }
 
-module.exports.saveTimevids = (user) => {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(path.join(assetsPath, 'data/timevids.json'), JSON.stringify(Array.from(user ? user : [])), (err) => {
-      if (err) {
-        console.error(err)
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
+module.exports.saveTimevids = (vids) => {
+  return new Promise(async (resolve, reject) => {
+    await mongoClient.connect()
+    const db = mongoClient.db('botchro')
+    const collection = db.collection('timevids')
+
+    try {
+      await collection.deleteMany({})
+      if(vids.size) await collection.insertMany(Array.from(vids).map((url) => ({ url })))
+      resolve()
+    } catch (err) {
+      console.error(err)
+      reject()
+    }
   })
 }
 
 module.exports.loadTimevids = async () => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path.join(assetsPath, 'data/timevids.json'), (err, data) => {
-      if (err) {
-        console.error(err)
-        resolve(new Set())
-      } else {
-        resolve(new Set(JSON.parse(data)))
-      }
-    })
+  return new Promise(async (resolve, reject) => {
+    await mongoClient.connect()
+    const db = mongoClient.db('botchro')
+    const collection = db.collection('timevids')
+
+    try {
+      const result = (await collection.find().toArray()).map((r) => r.url)
+      resolve(new Set(result))
+    } catch (err) {
+      console.error(err)
+      reject(new Set())
+    }
   })
 }
