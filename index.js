@@ -1,5 +1,6 @@
 require("dotenv").config()
 const { REST, Routes } = require('discord.js')
+const { loadTimevids } = require('./utils/index.js')
 
 const token = process.env.TOKEN
 const botid = process.env.BOTID
@@ -149,6 +150,14 @@ http.createServer((req, res) => {
   }
 
   if(req.method === 'GET') {
+    if(parsedUrl.pathname === '/data/timevids') {
+      loadTimevids().then((data) => {
+        res.writeHead(200, headers)
+        res.end(JSON.stringify(Array.from(data)))
+      })
+      return
+    }
+
     res.writeHead(200, headers)
     fs.readFile(pathname, function(err, data) {
       if(err) {
