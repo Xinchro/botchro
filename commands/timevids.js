@@ -23,13 +23,14 @@ module.exports.addTimevid = async (interaction) => {
     return 'Timevid already exists'
   }
 
-  if(!url.match(/(youtube.com|youtu.be|reddit.com|v.redd.it|i.imgur.com|twitter.com)/)) {
+  if(!url.match(/(youtube.com|youtu.be|reddit.com|v.redd.it|i.imgur.com|twitter.com|instagram.com)/)) {
     return `Timevid video must be a supported site.
     Supported sites:
     - YouTube
     - Reddit
     - Imgur
-    - Twitter`
+    - Twitter
+    - Instagram`
   }
 
   timevids.add(interaction.options.getString('url'))
