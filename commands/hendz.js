@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const assetsPath = path.join(__dirname, '..', 'assets')
+const { getUserCharacterConfig } = require('../utils/index.js')
 
 module.exports.hendzHandler = async (interaction) => {
   switch(interaction.options.getSubcommand()) {
@@ -19,14 +20,26 @@ module.exports.hendzHandler = async (interaction) => {
 
 module.exports.showHend = async (interaction) => {
   const hendz = await loadHendz()
-  hendz.add(interaction.user.username)
+  const username = interaction.user.username
+  const character = await getCharacter(interaction.user.id)
+  const userObject = {
+    username,
+    character
+  }
+  hendz.add(JSON.stringify(userObject))
   await saveHendz(hendz)
   return 'You\'ve hendz\'d'
 }
 
 module.exports.hideHend = async (interaction) => {
   const hendz = await loadHendz()
-  hendz.delete(interaction.user.username)
+  const username = interaction.user.username
+  const character = await getCharacter(interaction.user.id)
+  const userObject = {
+    username,
+    character
+  }
+  hendz.delete(JSON.stringify(userObject))
   await saveHendz(hendz)
   return 'You\'ve unhendz\'d'
 }
@@ -39,6 +52,11 @@ module.exports.getHendz = async () => {
 module.exports.resetHendz = async () => {
   await saveHendz(new Set())
   return 'Hendz have been reset'
+}
+
+async function getCharacter(userId) {
+  const config = await getUserCharacterConfig(userId)
+  return config
 }
 
 function saveHendz(user) {

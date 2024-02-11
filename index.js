@@ -27,6 +27,30 @@ const commands = [
     description: 'Next Xoncflix'
   },
   {
+    name: 'xoncchar',
+    description: 'Enter your character code to change it',
+    options: [
+      {
+        name: 'set',
+        description: 'Set your character code',
+        type: 1,
+        options: [
+          {
+            name: 'code',
+            description: 'Your character code',
+            type: 3,
+            required: true
+          }
+        ]
+      },
+      {
+        name: 'get',
+        description: 'Get your character code',
+        type: 1
+      }
+    ]
+  },
+  {
     name: 'hendz',
     description: 'Hendz actions',
     options: [
@@ -158,6 +182,7 @@ http.createServer((req, res) => {
       return
     }
 
+    // fetch any file from the data path that isn't timevids
     res.writeHead(200, headers)
     fs.readFile(pathname, function(err, data) {
       if(err) {

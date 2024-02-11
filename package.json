@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js --ignore assets/",
+    "db": "mongod --dbpath=./db",
     "coverage": "nyc mocha",
     "test": "npm run coverage"
   },

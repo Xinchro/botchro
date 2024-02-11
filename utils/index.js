@@ -102,3 +102,19 @@ module.exports.loadTimevids = async () => {
     }
   })
 }
+
+module.exports.getUserCharacterConfig = async (userId) => {
+  return new Promise(async (resolve, reject) => {
+    await mongoClient.connect()
+    const db = mongoClient.db('botchro')
+    const collection = db.collection('userconfig')
+
+    try {
+      const result = await collection.findOne({ id: userId })
+      resolve(result.character)
+    } catch (err) {
+      console.error(err)
+      reject()
+    }
+  })
+}
