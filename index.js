@@ -123,7 +123,7 @@ const commands = [
 const rest = new REST({ version: '10' }).setToken(token)
 const { ActivityType } = require('discord.js')
 
-async function loadCommands() {
+module.exports.loadCommands = async () => {
   try {
     console.log('Started refreshing application (/) commands.')
 
@@ -140,7 +140,7 @@ const { client } = require('./client.js')
 const { interactions } = require('./commands/index.js')
 
 module.exports.startClient = () => {
-  loadCommands()
+  this.loadCommands()
 
   client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`)
@@ -151,11 +151,11 @@ module.exports.startClient = () => {
 
   client.login(token)
 
-  hostFiles()
+  this.hostFiles()
 }
 
 
-function hostFiles() {
+module.exports.hostFiles = () => {
   /* light server to serve the assets folder */
   const http = require('http')
   const url = require('url')
