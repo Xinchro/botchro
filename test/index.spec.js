@@ -60,7 +60,7 @@ describe('Botchro index', () => {
 
       clientStub = sinon.stub()
       sinon.stub(client, 'user').get(() => {return{
-        tag: '',
+        tag: 'stubbed tag',
         setActivity: clientStub
       }})
       sinon.stub(client, 'on').callsFake((arg1, arg2) => {
