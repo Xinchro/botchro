@@ -7,8 +7,12 @@
     "start": "node -e 'require(\"./index.js\").startClient()'",
     "dev": "nodemon --exec 'npm start' --ignore assets/",
     "db": "mongod --dbpath=./db",
-    "coverage": "nyc mocha",
-    "test": "npm run coverage"
+    "coverage": "nyc npm run mocha",
+    "coverage:watch": "nyc npm run mocha:watch",
+    "mocha": "mocha --config .mocharc.json",
+    "mocha:watch": "mocha --config .mocharc.json --watch",
+    "test": "npm run coverage",
+    "test:watch": "npm run coverage:watch"
   },
   "author": "Xinchro",
   "license": "MIT",
