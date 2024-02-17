@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js --ignore assets/",
+    "start": "node -e 'require(\"./index.js\").startClient()'",
+    "dev": "nodemon --exec 'npm start' --ignore assets/",
     "db": "mongod --dbpath=./db",
     "coverage": "nyc mocha",
     "test": "npm run coverage"
