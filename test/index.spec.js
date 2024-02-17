@@ -1,6 +1,5 @@
 const chai = require('chai')
 const { use, expect, assert } = require('chai')
-const chaiAsPromised = require("chai-as-promised")
 const sinon = require("sinon")
 const sinonChai = require("sinon-chai")
 const path = require('path')
@@ -10,7 +9,6 @@ const { client } = require('../client.js')
 
 const botchro = require('../index.js')
 
-use(chaiAsPromised)
 use(sinonChai)
 
 describe('Botchro index', () => {

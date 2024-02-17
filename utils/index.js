@@ -2,8 +2,6 @@ const { execSync } = require('child_process')
 const fs = require('fs')
 const path = require('path')
 const { MongoClient } = require('mongodb')
-const mongoUri = `mongodb://${process.env.MONGOUSER}:${process.env.MONGOPASSWORD}@${process.env.MONGOHOST}:${process.env.MONGOPORT}`
-const mongoClient = new MongoClient(mongoUri)
 const assetsPath = path.join(__dirname, '..', 'assets')
 
 module.exports.formatDateTime  = (time) => {
@@ -72,6 +70,9 @@ module.exports.logInteraction = (interaction) => {
 
 module.exports.saveTimevids = (vids) => {
   return new Promise(async (resolve, reject) => {
+    const mongoUri = `mongodb://${process.env.MONGOUSER}:${process.env.MONGOPASSWORD}@${process.env.MONGOHOST}:${process.env.MONGOPORT}`
+    const mongoClient = new MongoClient(mongoUri)
+
     await mongoClient.connect()
     const db = mongoClient.db('botchro')
     const collection = db.collection('timevids')
@@ -89,6 +90,9 @@ module.exports.saveTimevids = (vids) => {
 
 module.exports.loadTimevids = async () => {
   return new Promise(async (resolve, reject) => {
+    const mongoUri = `mongodb://${process.env.MONGOUSER}:${process.env.MONGOPASSWORD}@${process.env.MONGOHOST}:${process.env.MONGOPORT}`
+    const mongoClient = new MongoClient(mongoUri)
+
     await mongoClient.connect()
     const db = mongoClient.db('botchro')
     const collection = db.collection('timevids')
@@ -105,6 +109,9 @@ module.exports.loadTimevids = async () => {
 
 module.exports.getUserCharacterConfig = async (userId) => {
   return new Promise(async (resolve, reject) => {
+    const mongoUri = `mongodb://${process.env.MONGOUSER}:${process.env.MONGOPASSWORD}@${process.env.MONGOHOST}:${process.env.MONGOPORT}`
+    const mongoClient = new MongoClient(mongoUri)
+
     await mongoClient.connect()
     const db = mongoClient.db('botchro')
     const collection = db.collection('userconfig')
