@@ -26,13 +26,8 @@ module.exports.showHend = async (interaction) => {
 
 module.exports.hideHend = async (interaction) => {
   const hendz = await loadHendz()
-  const username = interaction.user.username
-  const character = await getCharacter(interaction.user.id)
-  const userObject = {
-    username,
-    character
-  }
-  hendz.delete(JSON.stringify(userObject))
+  // this is boolean for some reason instead of the set, javascript why?
+  hendz.delete(interaction.user.id)
   await saveHendz(hendz)
   return 'You\'ve unhendz\'d'
 }
@@ -52,9 +47,9 @@ async function getCharacter(userId) {
   return config
 }
 
-function saveHendz(user) {
+function saveHendz(userList) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(path.join(assetsPath, 'data/hendz.json'), JSON.stringify(Array.from(user ? user : [])), (err) => {
+    fs.writeFile(path.join(assetsPath, 'data/hendz.json'), JSON.stringify(Array.from(userList)), (err) => {
       if(err) {
         console.error(err)
         reject(err)
@@ -65,7 +60,7 @@ function saveHendz(user) {
   })
 }
 
-async function loadHendz() {
+function loadHendz() {
   return new Promise((resolve, reject) => {
     fs.readFile(path.join(assetsPath, 'data/hendz.json'), (err, data) => {
       if(err) {
