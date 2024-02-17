@@ -27,6 +27,30 @@ const commands = [
     description: 'Next Xoncflix'
   },
   {
+    name: 'xoncchar',
+    description: 'Enter your character code to change it',
+    options: [
+      {
+        name: 'set',
+        description: 'Set your character code',
+        type: 1,
+        options: [
+          {
+            name: 'code',
+            description: 'Your character code',
+            type: 3,
+            required: true
+          }
+        ]
+      },
+      {
+        name: 'get',
+        description: 'Get your character code',
+        type: 1
+      }
+    ]
+  },
+  {
     name: 'hendz',
     description: 'Hendz actions',
     options: [
@@ -99,7 +123,7 @@ const commands = [
 const rest = new REST({ version: '10' }).setToken(token)
 const { ActivityType } = require('discord.js')
 
-async function loadCommands() {
+module.exports.loadCommands = async () => {
   try {
     console.log('Started refreshing application (/) commands.')
 
@@ -111,66 +135,75 @@ async function loadCommands() {
   }
 }
 
-loadCommands()
 
 const { client } = require('./client.js')
 const { interactions } = require('./commands/index.js')
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`)
-  client.user.setActivity('How To Be Human 101', { type: ActivityType.Watching  })
-})
+module.exports.startClient = () => {
+  this.loadCommands()
 
-client.on('interactionCreate', interactions)
+  client.on('ready', () => {
+    console.log(`Logged in as ${client.user.tag}!`)
+    client.user.setActivity('How To Be Human 101', { type: ActivityType.Watching  })
+  })
 
-client.login(token)
+  client.on('interactionCreate', interactions)
 
-/* light server to serve the assets folder */
-const http = require('http')
-const url = require('url')
-const fs = require('fs')
-const path = require('path')
+  client.login(token)
 
-const PORT = process.env.PORT || 3000
+  this.hostFiles()
+}
 
-http.createServer((req, res) => {
-  const parsedUrl = url.parse(req.url)
-  let pathname = path.join(__dirname+'/assets', parsedUrl.pathname)
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Request-Method': '*',
-    'Access-Control-Allow-Methods': 'OPTIONS, GET',
-    'Access-Control-Allow-Headers': '*'
-  }
 
-  if(req.method === 'OPTIONS') {
-    res.writeHead(204, headers)
-    res.end()
-    return
-  }
+module.exports.hostFiles = () => {
+  /* light server to serve the assets folder */
+  const http = require('http')
+  const url = require('url')
+  const fs = require('fs')
+  const path = require('path')
 
-  if(req.method === 'GET') {
-    if(parsedUrl.pathname === '/data/timevids') {
-      loadTimevids().then((data) => {
-        res.writeHead(200, headers)
-        res.end(JSON.stringify(Array.from(data)))
-      })
+  const PORT = process.env.PORT || 3000
+
+  http.createServer((req, res) => {
+    const parsedUrl = url.parse(req.url)
+    let pathname = path.join(__dirname+'/assets', parsedUrl.pathname)
+    const headers = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Request-Method': '*',
+      'Access-Control-Allow-Methods': 'OPTIONS, GET',
+      'Access-Control-Allow-Headers': '*'
+    }
+
+    if(req.method === 'OPTIONS') {
+      res.writeHead(204, headers)
+      res.end()
       return
     }
 
-    res.writeHead(200, headers)
-    fs.readFile(pathname, function(err, data) {
-      if(err) {
-        res.statusCode = 404
-        res.end()
-      } else {
-        res.statusCode = 200
-        res.end(data)
+    if(req.method === 'GET') {
+      if(parsedUrl.pathname === '/data/timevids') {
+        loadTimevids().then((data) => {
+          res.writeHead(200, headers)
+          res.end(JSON.stringify(Array.from(data)))
+        })
+        return
       }
-    })
 
-    return
-  }
-}).listen(PORT)
+      // fetch any file from the data path that isn't timevids
+      res.writeHead(200, headers)
+      fs.readFile(pathname, function(err, data) {
+        if(err) {
+          res.statusCode = 404
+          res.end()
+        } else {
+          res.statusCode = 200
+          res.end(data)
+        }
+      })
 
-console.log(`assets served on port ${PORT}`)
+      return
+    }
+  }).listen(PORT)
+
+  console.log(`assets served on port ${PORT}`)
+}

@@ -4,10 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js --ignore assets/",
-    "coverage": "nyc mocha",
-    "test": "npm run coverage"
+    "start": "node -e 'require(\"./index.js\").startClient()'",
+    "dev": "nodemon --exec 'npm start' --ignore assets/",
+    "db": "mongod --dbpath=./db",
+    "coverage": "nyc npm run mocha",
+    "mocha": "mocha --config .mocharc.json",
+    "mocha:watch": "nodemon --exec 'mocha --config .mocharc.json'",
+    "test": "npm run coverage",
+    "test:watch": "npm run mocha:watch"
   },
   "author": "Xinchro",
   "license": "MIT",
@@ -21,6 +25,9 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "mocha": "^10.2.0",
-    "nyc": "^15.1.0"
+    "mocha-suppress-logs": "^0.5.1",
+    "nyc": "^15.1.0",
+    "sinon": "^17.0.1",
+    "sinon-chai": "^3.7.0"
   }
 }

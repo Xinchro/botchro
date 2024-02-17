@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const assetsPath = path.join(__dirname, '..', 'assets')
+const { getUserCharacterConfig } = require('../utils/index.js')
 
 module.exports.hendzHandler = async (interaction) => {
   switch(interaction.options.getSubcommand()) {
@@ -19,14 +20,14 @@ module.exports.hendzHandler = async (interaction) => {
 
 module.exports.showHend = async (interaction) => {
   const hendz = await loadHendz()
-  hendz.add(interaction.user.username)
-  await saveHendz(hendz)
+  await saveHendz(hendz.add(interaction.user.id))
   return 'You\'ve hendz\'d'
 }
 
 module.exports.hideHend = async (interaction) => {
   const hendz = await loadHendz()
-  hendz.delete(interaction.user.username)
+  // this is boolean for some reason instead of the set, javascript why?
+  hendz.delete(interaction.user.id)
   await saveHendz(hendz)
   return 'You\'ve unhendz\'d'
 }
@@ -41,9 +42,14 @@ module.exports.resetHendz = async () => {
   return 'Hendz have been reset'
 }
 
-function saveHendz(user) {
+async function getCharacter(userId) {
+  const config = await getUserCharacterConfig(userId)
+  return config
+}
+
+function saveHendz(userList) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(path.join(assetsPath, 'data/hendz.json'), JSON.stringify(Array.from(user ? user : [])), (err) => {
+    fs.writeFile(path.join(assetsPath, 'data/hendz.json'), JSON.stringify(Array.from(userList)), (err) => {
       if(err) {
         console.error(err)
         reject(err)
@@ -54,7 +60,7 @@ function saveHendz(user) {
   })
 }
 
-async function loadHendz() {
+function loadHendz() {
   return new Promise((resolve, reject) => {
     fs.readFile(path.join(assetsPath, 'data/hendz.json'), (err, data) => {
       if(err) {

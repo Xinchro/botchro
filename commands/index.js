@@ -6,6 +6,7 @@ const { AttachmentBuilder } = require('discord.js')
 const { getEvents } = require('./xoncflix.js')
 const { hendzHandler } = require('./hendz.js')
 const { timevidsHandler } = require('./timevids.js')
+const { xonccharHandler } = require('./xoncchar.js')
 
 module.exports.interactions = async function (interaction) {
   if (!interaction.isChatInputCommand()) return
@@ -27,6 +28,12 @@ module.exports.interactions = async function (interaction) {
       break
     case 'hello':
       interaction.reply({ embeds: [hello()], ephemeral: false })
+      break
+    case 'xoncchar':
+      xonccharHandler(interaction)
+       .then((response) => {
+          interaction.reply(response)
+       })
       break
     case 'xoncflix':
       getEvents(interaction.guild)
