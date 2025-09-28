@@ -2,7 +2,7 @@ const { logInteraction } = require('../utils/index.js')
 
 const { hello } = require('./hello.js')
 const { getUptime } = require('./uptime.js')
-const { AttachmentBuilder } = require('discord.js')
+const { AttachmentBuilder, MessageFlags } = require('discord.js')
 const { getEvents } = require('./xoncflix.js')
 const { hendzHandler } = require('./hendz.js')
 const { timevidsHandler } = require('./timevids.js')
@@ -23,10 +23,10 @@ module.exports.interactions = async function (interaction) {
       interaction.reply({ files: [file] })
       break
     case 'uptime':
-      interaction.reply(`I've been up for ${getUptime()}`, { ephemeral: true })
+      interaction.reply(`I've been up for ${getUptime()}`, { flags: MessageFlags.Ephemeral })
       break
     case 'hello':
-      interaction.reply({ embeds: [hello()], ephemeral: false })
+      interaction.reply({ embeds: [hello()] })
       break
     case 'xoncflix':
       getEvents(interaction.guild)
@@ -48,7 +48,7 @@ module.exports.interactions = async function (interaction) {
         })
       break
     default:
-      interaction.reply('Unknown command', { ephemeral: true })
+      interaction.reply('Unknown command', { flags: MessageFlags.Ephemeral })
       break
   }
 }

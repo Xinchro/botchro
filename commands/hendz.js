@@ -1,3 +1,4 @@
+const { MessageFlags } = require('discord.js')
 const fs = require('fs')
 const path = require('path')
 const assetsPath = path.join(__dirname, '..', 'assets')
@@ -5,13 +6,13 @@ const assetsPath = path.join(__dirname, '..', 'assets')
 module.exports.hendzHandler = async (interaction) => {
   switch(interaction.options.getSubcommand()) {
     case 'show':
-      return { content: await this.showHend(interaction), ephemeral: true }
+      return { content: await this.showHend(interaction), flags: MessageFlags.Ephemeral }
     case 'hide':
-      return { content: await this.hideHend(interaction), ephemeral: true }
+      return { content: await this.hideHend(interaction), flags: MessageFlags.Ephemeral }
     case 'peek':
-      return { content: await this.getHendz(interaction), ephemeral: false }
+      return { content: await this.getHendz(interaction) }
     case 'reset':
-      return { content: await this.resetHendz(interaction), ephemeral: true }
+      return { content: await this.resetHendz(interaction), flags: MessageFlags.Ephemeral }
     default:
       return 'wat'
   }

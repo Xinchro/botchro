@@ -1,15 +1,16 @@
+const { MessageFlags } = require('discord.js')
 const { loadTimevids, saveTimevids } = require('../utils/index.js')
 
 module.exports.timevidsHandler = async (interaction) => {
   switch (interaction.options.getSubcommand()) {
     case 'add':
-      return { content: await this.addTimevid(interaction), ephemeral: true }
+      return { content: await this.addTimevid(interaction), flags: MessageFlags.Ephemeral }
     case 'remove':
-      return { content: await this.removeTimevid(interaction), ephemeral: true }
+      return { content: await this.removeTimevid(interaction), flags: MessageFlags.Ephemeral }
     case 'list':
-      return { content: await this.getTimevids(interaction), ephemeral: true }
+      return { content: await this.getTimevids(interaction), flags: MessageFlags.Ephemeral }
     case 'clear':
-      return { content: await this.clearTimevids(interaction), ephemeral: true }
+      return { content: await this.clearTimevids(interaction), flags: MessageFlags.Ephemeral }
     default:
       return 'wat'
   }
