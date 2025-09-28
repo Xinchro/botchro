@@ -116,7 +116,7 @@ loadCommands()
 const { client } = require('./client.js')
 const { interactions } = require('./commands/index.js')
 
-client.on('ready', () => {
+client.on('clientReady', () => {
   console.log(`Logged in as ${client.user.tag}!`)
   client.user.setActivity('How To Be Human 101', { type: ActivityType.Watching  })
 })
