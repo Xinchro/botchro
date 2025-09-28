@@ -1,10 +1,12 @@
 const { execSync } = require('child_process')
 const fs = require('fs')
 const path = require('path')
-const { MongoClient } = require('mongodb')
-const mongoUri = `mongodb://${process.env.MONGOUSER}:${process.env.MONGOPASSWORD}@${process.env.MONGOHOST}:${process.env.MONGOPORT}`
-const mongoClient = new MongoClient(mongoUri)
+
+const { S3Client, ListObjectsCommand, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3')
+
 const assetsPath = path.join(__dirname, '..', 'assets')
+
+const data = {}
 
 module.exports.formatDateTime  = (time) => {
   const date = new Date(time)
@@ -71,34 +73,56 @@ module.exports.logInteraction = (interaction) => {
 }
 
 module.exports.saveTimevids = (vids) => {
-  return new Promise(async (resolve, reject) => {
-    await mongoClient.connect()
-    const db = mongoClient.db('botchro')
-    const collection = db.collection('timevids')
+  return new Promise(async (resolve, reject) => { 
+    const s3Client = new S3Client({
+      region: 'eu-west-2',
+      credentials: {
+        accessKeyId: process.env.AWSKEY,
+        secretAccessKey: process.env.AWSSECRET
+      }
+    })
 
-    try {
-      await collection.deleteMany({})
-      if(vids.size) await collection.insertMany(Array.from(vids).map((url) => ({ url })))
+    data.vids = Array.from(vids)
+
+    await s3Client.send(
+      new PutObjectCommand({
+        Body: JSON.stringify(data.vids),
+        Bucket: 'botchro-data',
+        Key: `data-vids-${process.env.ENVIRONMENT}.json`,
+        ContentType: 'application/json'
+      })
+    ).finally(() => {
       resolve()
-    } catch (err) {
-      console.error(err)
-      reject()
-    }
+    }).catch(() => {
+      reject("Saving vids failed")
+    })
   })
 }
 
 module.exports.loadTimevids = async () => {
   return new Promise(async (resolve, reject) => {
-    await mongoClient.connect()
-    const db = mongoClient.db('botchro')
-    const collection = db.collection('timevids')
-
     try {
-      const result = (await collection.find().toArray()).map((r) => r.url)
-      resolve(new Set(result))
-    } catch (err) {
-      console.error(err)
-      reject(new Set())
+      const s3Client = new S3Client({
+        region: 'eu-west-2',
+        credentials: {
+          accessKeyId: process.env.AWSKEY,
+          secretAccessKey: process.env.AWSSECRET
+        }
+      })
+
+      const resp = await s3Client.send(
+        new GetObjectCommand({
+          Bucket: 'botchro-data',
+          Key: `data-vids-${process.env.ENVIRONMENT}.json`
+        })
+      )
+
+      const vids = (await resp.Body.transformToString())
+
+      resolve(new Set(JSON.parse(vids)))
+    } catch(e) {
+      console.error(e)
+      reject("Failed to load time vids")
     }
   })
 }
