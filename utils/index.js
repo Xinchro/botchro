@@ -21,14 +21,14 @@ module.exports.formatDateTime  = (time) => {
 }
 
 module.exports.getLastCommitTime = () =>  {
-  const curl = execSync('curl https://api.github.com/repos/xinchro/botchro/commits?per_page=1')
+  const curl = execSync('curl -s https://api.github.com/repos/xinchro/botchro/commits?per_page=1')
   const commitTime = this.formatDateTime(JSON.parse(curl)[0].commit.author.date)
 
   return commitTime
 }
 
 module.exports.getLastCommitMessage = () => {
-  const curl = execSync('curl https://api.github.com/repos/xinchro/botchro/commits?per_page=1')
+  const curl = execSync('curl -s https://api.github.com/repos/xinchro/botchro/commits?per_page=1')
   const commitMessage = JSON.parse(curl)[0].commit.message.split('\n')[0]
 
   return commitMessage
