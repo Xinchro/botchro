@@ -48,7 +48,7 @@ module.exports.removeTimevid = async (interaction) => {
 
 module.exports.getTimevids = async () => {
   const timevidsArray = Array.from(await loadTimevids())
-  return `Timevids: ${timevidsArray.length > 0 ? timevidsArray.join(', ') : 'No timevids. Very sad. :('}`
+  return `Timevids: ${timevidsArray.length > 0 ? `\`\`\`${timevidsArray.join(',\n')}\`\`\`` : 'No timevids. Very sad. :('}`
 }
 
 module.exports.clearTimevids = async () => {
