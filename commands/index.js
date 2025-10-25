@@ -6,6 +6,7 @@ const { AttachmentBuilder, MessageFlags } = require('discord.js')
 const { getEvents } = require('./xoncflix.js')
 const { hendzHandler } = require('./hendz.js')
 const { timevidsHandler } = require('./timevids.js')
+const { characterCustomizerHandler } = require('./character-customizer.js')
 
 module.exports.interactions = async function (interaction) {
   if (!interaction.isChatInputCommand()) return
@@ -30,10 +31,10 @@ module.exports.interactions = async function (interaction) {
       break
     case 'xoncflix':
       getEvents(interaction.guild)
-      .then((events) => {
-        interaction.reply({ embeds: [events] })
-      })
-      .catch((err) => { console.log(err) })
+        .then((events) => {
+          interaction.reply({ embeds: [events] })
+        })
+        .catch((err) => { console.log(err) })
       break
     case 'hendz':
       hendzHandler(interaction)
@@ -47,11 +48,14 @@ module.exports.interactions = async function (interaction) {
           interaction.reply(response)
         })
       break
+    case 'character':
+      characterCustomizerHandler(interaction)
+        .then((response) => {
+          interaction.reply(response)
+        })
+      break
     default:
       interaction.reply('Unknown command', { flags: MessageFlags.Ephemeral })
       break
   }
 }
-
-module.exports.hello
-module.exports.uptime

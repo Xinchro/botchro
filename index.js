@@ -1,100 +1,10 @@
 require("dotenv").config()
 const { REST, Routes } = require('discord.js')
-const { loadTimevids } = require('./utils/index.js')
+const { loadTimevids, loadCharacterConfig } = require('./utils/index.js')
+const { commands } = require('./commands/commands.js')
 
 const token = process.env.TOKEN
 const botid = process.env.BOTID
-
-const commands = [
-  {
-    name: 'yay',
-    description: 'YyyaaAaAAaaYYyy'
-  },
-  {
-    name: 'aah',
-    description: 'AAAAAaaaaAAAAhhhh...'
-  },
-  {
-    name: 'uptime',
-    description: 'Shows the uptime of the bot'
-  },
-  {
-    name: 'hello',
-    description: 'Bot information'
-  },
-  {
-    name: 'xoncflix',
-    description: 'Next Xoncflix'
-  },
-  {
-    name: 'hendz',
-    description: 'Hendz actions',
-    options: [
-      {
-        name: 'show',
-        description: 'Show your hend',
-        type: 1
-      },
-      {
-        name: 'hide',
-        description: 'Hide your hend',
-        type: 1
-      },
-      {
-        name: 'peek',
-        description: 'Peek at hendz',
-        type: 1
-      },
-      {
-        name: 'reset',
-        description: 'Reset hendz',
-        type: 1
-      }
-    ]
-  },
-  {
-    name: 'timevids',
-    description: 'TimeVids actions',
-    options: [
-      {
-        name: 'add',
-        description: 'Add a video to the queue',
-        type: 1,
-        options: [
-          {
-            name: 'url',
-            description: 'URL of the video',
-            type: 3,
-            required: true
-          }
-        ]
-      },
-      {
-        name: 'remove',
-        description: 'Remove a video from the queue',
-        type: 1,
-        options: [
-          {
-            name: 'url',
-            description: 'URL of the video',
-            type: 3,
-            required: true
-          }
-        ]
-      },
-      {
-        name: 'list',
-        description: 'List all videos in the queue',
-        type: 1
-      },
-      {
-        name: 'clear',
-        description: 'Clear all videos from the queue',
-        type: 1
-      }
-    ]
-  }
-]
 
 const rest = new REST({ version: '10' }).setToken(token)
 const { ActivityType } = require('discord.js')
@@ -103,9 +13,9 @@ async function loadCommands() {
   try {
     console.log('Started refreshing application (/) commands.')
 
-    await rest.put(Routes.applicationCommands(botid), { body: commands })
+    const data = await rest.put(Routes.applicationCommands(botid), { body: commands })
 
-    console.log('Successfully reloaded application (/) commands.')
+    console.log(`Successfully reloaded ${data.length} application (/) commands.`)
   } catch (error) {
     console.error(error)
   }
@@ -155,6 +65,20 @@ http.createServer((req, res) => {
         res.writeHead(200, headers)
         res.end(JSON.stringify(Array.from(data)))
       })
+      return
+    }
+
+    if(parsedUrl.pathname === '/character') {
+      const characterId = new URL(`http://${process.env.HOST ?? 'localhost'}${req.url}`).searchParams.get('id')
+      loadCharacterConfig(characterId)
+        .then((data) => {
+          res.writeHead(200, headers)
+          res.end(data)
+        })
+        .catch(e => {
+          res.writeHead(200, headers)
+          res.end('01|00|00|00|00')
+        })
       return
     }
 

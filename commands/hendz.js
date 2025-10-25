@@ -20,7 +20,7 @@ module.exports.hendzHandler = async (interaction) => {
 
 module.exports.showHend = async (interaction) => {
   const hendz = await loadHendz()
-  hendz.add(interaction.user.username)
+  hendz.add({name: interaction.user.username, id: interaction.user.id})
   await saveHendz(hendz)
   return 'You\'ve hendz\'d'
 }

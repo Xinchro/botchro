@@ -21,14 +21,14 @@ module.exports.formatDateTime  = (time) => {
 }
 
 module.exports.getLastCommitTime = () =>  {
-  const curl = execSync('curl -s https://api.github.com/repos/xinchro/botchro/commits?per_page=1')
+  const curl = execSync('curl -s https://api.github.com/repos/xinchro/botchro/commits?per_page=1').toString()
   const commitTime = this.formatDateTime(JSON.parse(curl)[0].commit.author.date)
 
   return commitTime
 }
 
 module.exports.getLastCommitMessage = () => {
-  const curl = execSync('curl -s https://api.github.com/repos/xinchro/botchro/commits?per_page=1')
+  const curl = execSync('curl -s https://api.github.com/repos/xinchro/botchro/commits?per_page=1').toString()
   const commitMessage = JSON.parse(curl)[0].commit.message.split('\n')[0]
 
   return commitMessage
@@ -123,6 +123,118 @@ module.exports.loadTimevids = async () => {
     } catch(e) {
       console.error(e)
       reject("Failed to load time vids")
+    }
+  })
+}
+
+module.exports.saveCharacter = async (user, character, remove = false) => {
+  const characters = await loadCharacters().catch(() => {
+    return "Saving character failed, try again later?"
+  })
+
+  return new Promise(async (resolve, reject) => {
+    const s3Client = new S3Client({
+      region: 'eu-west-2',
+      credentials: {
+        accessKeyId: process.env.AWSKEY,
+        secretAccessKey: process.env.AWSSECRET
+      }
+    })
+
+    data.characters = characters
+    data.characters[user] = character
+    if(remove) delete data.characters[user]
+
+    await s3Client.send(
+      new PutObjectCommand({
+        Body: JSON.stringify(data.characters),
+        Bucket: 'botchro-data',
+        Key: `data-users-${process.env.ENVIRONMENT}.json`,
+        ContentType: 'application/json'
+      })
+    ).catch((e) => {
+      console.error(e)
+      reject("Saving character failed, try again later?")
+    }).finally(() => {
+      resolve(`Character updated to ${character}!`)
+    })
+  })
+
+}
+
+async function loadCharacters() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const s3Client = new S3Client({
+        region: 'eu-west-2',
+        credentials: {
+          accessKeyId: process.env.AWSKEY,
+          secretAccessKey: process.env.AWSSECRET
+        }
+      })
+
+      const resp = await s3Client.send(
+        new GetObjectCommand({
+          Bucket: 'botchro-data',
+          Key: `data-users-${process.env.ENVIRONMENT}.json`
+        })
+      )
+
+      const characters = JSON.parse(await resp.Body.transformToString())
+
+      resolve(characters)
+    } catch(e) {
+      console.error(e)
+      reject("Failed to load characters, sorry.")
+    }
+  })
+}
+
+module.exports.loadCharacter = async (user) => {
+  return new Promise(async (res, rej) => {
+    await this.loadCharacterConfig(user)
+      .then((config) => {
+        res(`Your character is currently set to: ${config}\nYou can see it here: https://botchro.xinchronize.com?character=${config}`)
+      })
+      .catch(e => {
+        if(e === 1) {
+          res("No character set for you. (yet?)")
+        } else {
+          res("Failed to character, sorry.")
+        }
+      })
+  })
+}
+
+module.exports.loadCharacterConfig = async (user) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const s3Client = new S3Client({
+        region: 'eu-west-2',
+        credentials: {
+          accessKeyId: process.env.AWSKEY,
+          secretAccessKey: process.env.AWSSECRET
+        }
+      })
+
+      const resp = await s3Client.send(
+        new GetObjectCommand({
+          Bucket: 'botchro-data',
+          Key: `data-users-${process.env.ENVIRONMENT}.json`
+        })
+      )
+
+      const characters = JSON.parse((await resp.Body.transformToString()))
+      if(Object.keys(characters).includes(user)) {
+        const character = characters[user]
+
+        resolve(character)
+      } else {
+        reject(1)
+      }
+    } catch(e) {
+      console.error(e)
+      reject(1)
     }
   })
 }
