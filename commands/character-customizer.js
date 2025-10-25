@@ -24,7 +24,6 @@ module.exports.characterCustomizerHandler = async (interaction) => {
 }
 
 module.exports.updateCharacter = async (interaction) => {
-  logInteraction(interaction)
   const code = interaction.options.getString('code')
 
   if(!/^(\d{0,3}\|){0,4}\d{0,3}$/.test(code)) {
@@ -55,7 +54,6 @@ module.exports.checkCharacter = async (interaction) => {
 }
 
 module.exports.removeCharacter = async (interaction) => {
-  logInteraction(interaction)
   await saveCharacter(interaction.user.id, '', true)
   return "Customized Character removed."
 }
